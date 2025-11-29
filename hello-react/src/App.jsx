@@ -1,9 +1,11 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+
+import { Container, Divider, List } from "@mui/material";
 
 import Item from "./Item.jsx";
-
+import Header from "./Header.jsx";
+import Form from "./Form.jsx";
 export default function App() {
-    const inputRef = useRef();
 
     const [data, setData] = useState([
 		{ id: 3, name: "Apple", done: false },
@@ -11,36 +13,56 @@ export default function App() {
 		{ id: 1, name: "Egg", done: false },
 	]);
 
-    const add = () => {
-        const id = data[0].id + 1;
-
-        const name = inputRef.current.value;
+    const add = name => {
+        const id = data[0] ? data[0].id + 1 : 1;
         if(name == "") return false;
-
         setData([{ id, name, done: false }, ...data]);
+    }
+
+    const del = id => {
+        setData(data.filter(item => item.id !== id));
+    }
+
+    const toggle = id => {
+        setData(data.map(item => {
+            if(item.id === id) item.done = !item.done;
+            return item;
+        }))
     }
 
     return (
 		<div>
-			<h1>Hello React</h1>
-			<form onSubmit={e => {
-                e.preventDefault();
-                add();
-                e.currentTarget.reset();
-            }}>
-                <input type="text" ref={inputRef} />
-				<button type="submit">Add</button>
-			</form>
-			<ul>
-				{data.map(item => {
+            <Header />
+            <Container maxWidth="sm" sx={{ mt: 4 }}>
+
+            <Form add={add}/>
+
+			<List>
+				{data.filter(item => !item.done).map(item => {
 					return (
 						<Item
 							key={item.id}
 							item={item}
+                            del={del}
+                            toggle={toggle}
 						/>
 					);
 				})}
-			</ul>
+			</List>
+            <Divider />
+            <List>
+				{data.filter(item => item.done).map(item => {
+					return (
+						<Item
+							key={item.id}
+							item={item}
+                            del={del}
+                            toggle={toggle}
+						/>
+					);
+				})}
+			</List>
+            </Container>
 		</div>
 	);
 }

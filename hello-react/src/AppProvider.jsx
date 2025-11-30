@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 
@@ -11,9 +11,11 @@ export function useApp() {
 export default function AppProvider({ children }) {
     const [mode, setMode] = useState("dark");
 
-    const theme = createTheme({
-		palette: { mode },
-	});
+    const theme = useMemo(() => {
+        return createTheme({
+			palette: { mode },
+		});
+    }, [mode]);
 
     return (
 		<AppContext.Provider value={{ mode, setMode }}>

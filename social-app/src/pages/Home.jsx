@@ -1,7 +1,10 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import Post from "../components/Post";
 
 export default function Home() {
     return <Box>
-        <Typography variant="h1">Home</Typography>
+        <Post />
+        <Post />
+        <Post />
     </Box>
 }

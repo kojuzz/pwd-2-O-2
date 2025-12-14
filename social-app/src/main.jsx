@@ -16,6 +16,7 @@ import Home from "./pages/Home.jsx";
 import Profile from "./pages/Profile.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
+import Show from "./pages/Show.jsx";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
 			{
 				path: "/profile",
 				element: <Profile />,
+			},
+			{
+				path: "/show",
+				element: <Show />,
 			},
 		],
 	},

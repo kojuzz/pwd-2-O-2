@@ -1,110 +1,110 @@
-import { useState, useEffect } from "react";
-
 import Item from "./Item.jsx";
 import Header from "./Header.jsx";
 import Form from "./Form.jsx";
 
 import { Container, Divider, List, Typography, Box } from "@mui/material";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const api = "http://localhost:8800/tasks";
 
 export default function App() {
-	const [data, setData] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState();
+  const queryClient = useQueryClient();
 
-	useEffect(() => {
-        setIsLoading(true);
-		fetch(api).then(async res => {
-            const tasks = await res.json();
-			setData(tasks);
-            setIsLoading(false);
-		})
-        .catch(() => {
-            setError("Unable to fetch");
-            setIsLoading(false);
-        });
-	}, []);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: async () => {
+      const res = await fetch(api);
+      return res.json();
+    }
+  });
 
-	const add = async name => {
-		const res = await fetch(api, {
-            method: "POST",
-            body: JSON.stringify({ name }),
-            headers: {
-                "Content-Type": "application/json"
-            },
-        });
+  const add = async name => {
+    await fetch(api, {
+      method: "POST",
+      body: JSON.stringify({ name }),
+      headers: {
+        "Content-Type": "application/json"
+      },
+    });
 
-        const task = await res.json();
-        setData([task, ...data]);
-	};
+    await queryClient.invalidateQueries(['tasks']);
+  };
 
-	const del = id => {
-        fetch(`${api}/${id}`, { method: "DELETE" });
-		setData(data.filter(item => item.id !== id));
-	};
+  const del = async id => {
+    await fetch(`${api}/${id}`, { method: "DELETE" });
+    await queryClient.invalidateQueries(['tasks']);
+  };
 
-	const toggle = id => {
-        fetch(`${api}/${id}/toggle`, { method: "PUT" });
-		setData(
-			data.map(item => {
-				if (item.id === id) item.done = !item.done;
-				return item;
-			})
-		);
-	};
+  const toggle = async id => {
+    await fetch(`${api}/${id}/toggle`, { method: "PUT" });
+    await queryClient.invalidateQueries(["tasks"]);
+  };
 
-	return (
-		<div>
-			<Header count={data.filter(item => !item.done).length} />
+  if (isLoading) {
+    return <Box>
+      <Typography>Loading...</Typography>
+    </Box>
+  }
 
-			<Container
-				maxWidth="sm"
-				sx={{ mt: 4 }}>
-				<Form add={add} />
+  if (error) {
+    return (
+      <Box>
+        <Typography>{error.message}</Typography>
+      </Box>
+    );
+  }
 
-				{isLoading && (
-					<Box sx={{ mt: 4, textAlign: "center" }}>
-						<Typography>Loading...</Typography>
-					</Box>
-				)}
+  return (
+    <div>
+      <Header count={data.filter(item => !item.done).length} />
 
-				{error && (
-					<Box sx={{ mt: 4, textAlign: "center" }}>
-						<Typography color="error">{error}</Typography>
-					</Box>
-				)}
+      <Container
+        maxWidth="sm"
+        sx={{ mt: 4 }}>
+        <Form add={add} />
 
-				<List>
-					{data
-						.filter(item => !item.done)
-						.map(item => {
-							return (
-								<Item
-									key={item.id}
-									item={item}
-									del={del}
-									toggle={toggle}
-								/>
-							);
-						})}
-				</List>
-				<Divider />
-				<List>
-					{data
-						.filter(item => item.done)
-						.map(item => {
-							return (
-								<Item
-									key={item.id}
-									item={item}
-									del={del}
-									toggle={toggle}
-								/>
-							);
-						})}
-				</List>
-			</Container>
-		</div>
-	);
+        {isLoading && (
+          <Box sx={{ mt: 4, textAlign: "center" }}>
+            <Typography>Loading...</Typography>
+          </Box>
+        )}
+
+        {error && (
+          <Box sx={{ mt: 4, textAlign: "center" }}>
+            <Typography color="error">{error}</Typography>
+          </Box>
+        )}
+
+        <List>
+          {data
+            .filter(item => !item.done)
+            .map(item => {
+              return (
+                <Item
+                  key={item.id}
+                  item={item}
+                  del={del}
+                  toggle={toggle}
+                />
+              );
+            })}
+        </List>
+        <Divider />
+        <List>
+          {data
+            .filter(item => item.done)
+            .map(item => {
+              return (
+                <Item
+                  key={item.id}
+                  item={item}
+                  del={del}
+                  toggle={toggle}
+                />
+              );
+            })}
+        </List>
+      </Container>
+    </div>
+  );
 }

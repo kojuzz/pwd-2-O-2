@@ -5,6 +5,13 @@ import { PrismaClient } from "../generated/prisma/client";
 const connectionString = `${process.env.DATABASE_URL}`;
 
 const adapter = new PrismaBetterSqlite3({ url: connectionString });
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+	adapter,
+	omit: {
+		user: {
+			password: true,
+		},
+	},
+});
 
 export { prisma };

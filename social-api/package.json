@@ -1,6 +1,7 @@
 {
 	"scripts": {
-		"dev": "tsx watch index.ts"
+		"dev": "tsx watch index.ts",
+        "fresh": "prisma migrate reset --force & prisma db seed"
 	},
 	"dependencies": {
 		"@prisma/adapter-better-sqlite3": "^7.2.0",

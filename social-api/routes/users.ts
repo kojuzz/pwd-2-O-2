@@ -53,12 +53,15 @@ router.post("/login", async (req, res) => {
 
 	if (user) {
 		if (await bcrypt.compare(password, user.password)) {
-			const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-            return res.json({ user, token });
+			const token = jwt.sign(
+				{ id: user.id },
+				process.env.JWT_SECRET as string
+			);
+			return res.json({ user, token });
 		}
 	}
 
-    res.status(401).json({ msg: "Invalid username or password" });
+	res.status(401).json({ msg: "Invalid username or password" });
 });
 
 export default router;

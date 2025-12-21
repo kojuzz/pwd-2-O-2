@@ -18,7 +18,7 @@ import {
 
 import { useNavigate } from "react-router";
 
-export default function Post() {
+export default function Post({ post }) {
 	const navigate = useNavigate();
 
 	return (
@@ -29,18 +29,14 @@ export default function Post() {
 						sx={{ width: 64, height: 64, background: green[500] }}
 					/>
 					<Box>
-						<Typography>Alice</Typography>
+						<Typography>{post.user.name}</Typography>
 						<Typography color="success">
-							a few seconds ago
+							{post.createdAt}
 						</Typography>
 						<Typography
-							sx={{ mt: 1 }}
-							onClick={() => navigate("/show")}>
-							Lorem ipsum dolor sit amet consectetur adipisicing
-							elit. Id accusantium in et deserunt dolore suscipit
-							dignissimos minus corrupti, rerum veniam, neque
-							animi, quod nam expedita? Delectus animi quas quidem
-							exercitationem.
+							sx={{ mt: 1, cursor: "pointer" }}
+							onClick={() => navigate(`/show/${post.id}`)}>
+							{post.content}
 						</Typography>
 					</Box>
 				</Box>
@@ -57,7 +53,7 @@ export default function Post() {
 						<Button
 							size="sm"
 							variant="text">
-							10
+							0
 						</Button>
 					</ButtonGroup>
 					<ButtonGroup>
@@ -67,7 +63,7 @@ export default function Post() {
 						<Button
 							size="sm"
 							variant="text">
-							5
+							{post.comments ? post.comments.length : 0}
 						</Button>
 					</ButtonGroup>
 				</Box>

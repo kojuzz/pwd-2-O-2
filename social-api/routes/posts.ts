@@ -3,54 +3,62 @@ const router = Router();
 
 import { prisma } from "../libs/prisma";
 
-import jwt from "jsonwebtoken";
+import { auth } from "../middlewares/auth";
 
-router.get("/", async(req, res, next) => {
-    const authorization = req.headers.authorization;
-    const token = authorization?.split(" ")[1];
-    if(!token) {
-        return res.status(401).json({ msg: "access token required" });
+router.get("/", async (req, res) => {
+		const posts = await prisma.post.findMany({
+			orderBy: {
+				id: "desc",
+			},
+			take: 20,
+			include: {
+				user: true,
+				likes: true,
+				comments: true,
+			},
+		});
+
+		res.json(posts);
+	}
+);
+
+router.post("/", auth, async (req, res) => {
+    const user = res.locals.user;
+    const content = req.body?.content;
+
+    if(!content) {
+        return res.status(400).json({ msg: "content is required" });
     }
 
-    if(!jwt.verify(token, process.env.JWT_SECRET)) {
-        return res.status(401).json({ msg: "invalid token" });
-    }
-
-    next();
-
-}, async (req, res) => {
-    const posts = await prisma.post.findMany({
-        orderBy: {
-            id: "desc",
-        },
-        take: 20,
-        include: {
-            user: true,
-            likes: true,
-            comments: true,
-        },
+    const post = await prisma.post.create({
+        data: {
+            content,
+            userId: user.id,
+        }
     });
 
-    res.json(posts);
+    res.json(post);
 });
 
 router.get("/:id", async (req, res) => {
-    const { id } = req.params;
+	const { id } = req.params;
 
-    const post = await prisma.post.findUnique({
-        where: { id: Number(id) },
-        include: {
-            user: true,
-            likes: true,
-            comments: true,
-        },
-    });
+	const post = await prisma.post.findUnique({
+		where: { id: Number(id) },
+		include: {
+			user: true,
+			likes: true,
+			comments: {
+                include: { user: true }
+            },
+		},
+	});
 
-    if (!post) {
-        return res.status(404).json({ msg: "Post not found" });
-    }
+	if (!post) {
+		return res.status(404).json({ msg: "Post not found" });
+	}
 
-    res.json(post);
+	res.json(post);
 });
 
 export default router;

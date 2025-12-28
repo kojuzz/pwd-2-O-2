@@ -3,20 +3,30 @@ import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function HomeLayout() {
-    return (
-		<Tabs>
+	return (
+		<Tabs
+			screenOptions={{
+				tabBarActiveTintColor: "#0F766E",
+				tabBarInactiveTintColor: "#6B7280",
+				tabBarStyle: {
+					backgroundColor: "#FFFFFF",
+					borderTopColor: "#E5E7EB",
+					borderTopWidth: 1,
+					height: 64,
+					paddingTop: 6,
+					paddingBottom: 10,
+				},
+				tabBarLabelStyle: {
+					fontSize: 12,
+					fontWeight: "600",
+				},
+			}}>
 			<Tabs.Screen
 				name="index"
 				options={{
 					title: "Home",
 					tabBarIcon: ({ color }) => {
-						return (
-							<Ionicons
-								name="home"
-								size={24}
-								color={color}
-							/>
-						);
+						return <Ionicons name="home" size={24} color={color} />;
 					},
 				}}
 			/>
@@ -25,13 +35,7 @@ export default function HomeLayout() {
 				options={{
 					title: "Profile",
 					tabBarIcon: ({ color }) => {
-						return (
-							<Ionicons
-								name="person"
-								size={24}
-								color={color}
-							/>
-						);
+						return <Ionicons name="person" size={24} color={color} />;
 					},
 				}}
 			/>
@@ -41,11 +45,7 @@ export default function HomeLayout() {
 					title: "Settings",
 					tabBarIcon: ({ color }) => {
 						return (
-							<Ionicons
-								name="settings"
-								size={24}
-								color={color}
-							/>
+							<Ionicons name="settings" size={24} color={color} />
 						);
 					},
 				}}

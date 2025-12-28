@@ -13,17 +13,20 @@ import { useQuery } from "@tanstack/react-query";
 import { PostType } from "@/types/global";
 import Comment from "@/components/comment";
 
-const api = "http://192.168.1.4:8800";
+import { api } from "@/libs/config";
+import { useState } from "react";
 
 export default function Home() {
 	const { id } = useLocalSearchParams();
+
+	const [reply, setReply] = useState("");
 
 	const {
 		data: post,
 		isLoading,
 		error,
 	} = useQuery({
-		queryKey: ["post", ""],
+		queryKey: ["post", id],
 		queryFn: async (): Promise<PostType> => {
 			const res = await fetch(`${api}/posts/${id}`);
 			return res.json();
@@ -37,8 +40,9 @@ export default function Home() {
 					flex: 1,
 					justifyContent: "center",
 					alignItems: "center",
+					backgroundColor: "#F9FAFB",
 				}}>
-				<Text>Loading...</Text>
+				<Text style={{ color: "#6B7280" }}>Loading...</Text>
 			</View>
 		);
 	}
@@ -50,8 +54,9 @@ export default function Home() {
 					flex: 1,
 					justifyContent: "center",
 					alignItems: "center",
+					backgroundColor: "#F9FAFB",
 				}}>
-				<Text>{error.message}</Text>
+				<Text style={{ color: "#DC2626" }}>{error.message}</Text>
 			</View>
 		);
 	}
@@ -63,44 +68,66 @@ export default function Home() {
 					flex: 1,
 					justifyContent: "center",
 					alignItems: "center",
+					backgroundColor: "#F9FAFB",
 				}}>
-				<Text>Post not found</Text>
+				<Text style={{ color: "#6B7280" }}>Post not found</Text>
 			</View>
 		);
 	}
 
 	return (
-		<ScrollView>
-			<Post
-				key={post.id}
-				post={post}
-			/>
+		<ScrollView style={{ backgroundColor: "#F9FAFB" }}>
+			<Post key={post.id} post={post} />
 
-			<View style={{ margin: 10 }}>
+			<View
+				style={{
+					marginHorizontal: 16,
+					marginTop: 12,
+					marginBottom: 8,
+					padding: 12,
+					backgroundColor: "#FFFFFF",
+					borderRadius: 12,
+					borderWidth: 1,
+					borderColor: "#E5E7EB",
+				}}>
+				<Text
+					style={{
+						fontSize: 14,
+						fontWeight: "600",
+						color: "#374151",
+						marginBottom: 8,
+					}}>
+					Add a reply
+				</Text>
 				<TextInput
 					placeholder="Your reply"
+					placeholderTextColor="#9CA3AF"
+					value={reply}
+					onChangeText={setReply}
 					style={{
-						padding: 10,
+						paddingVertical: 10,
+						paddingHorizontal: 12,
 						borderWidth: 1,
-						borderRadius: 5,
-						borderColor: "#66666650",
+						borderRadius: 10,
+						borderColor: "#E5E7EB",
 						fontSize: 16,
-						backgroundColor: "white",
-						marginBottom: 6,
+						backgroundColor: "#FFFFFF",
+						marginBottom: 10,
+						color: "#111827",
 					}}
 				/>
 				<TouchableOpacity
 					style={{
-						backgroundColor: "green",
-						padding: 10,
-						borderRadius: 8,
+						backgroundColor: "#0F766E",
+						paddingVertical: 12,
+						borderRadius: 10,
 						justifyContent: "center",
-                        alignItems: "center",
+						alignItems: "center",
 					}}>
 					<Text
 						style={{
-							color: "white",
-							fontWeight: "bold",
+							color: "#FFFFFF",
+							fontWeight: "700",
 							fontSize: 16,
 						}}>
 						Add Comment
@@ -109,12 +136,7 @@ export default function Home() {
 			</View>
 
 			{post.comments.map(comment => {
-				return (
-					<Comment
-						key={comment.id}
-						comment={comment}
-					/>
-				);
+				return <Comment key={comment.id} comment={comment} />;
 			})}
 		</ScrollView>
 	);

@@ -6,7 +6,7 @@ import { router } from "expo-router";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const api = "http://192.168.1.4:8800";
+import { api } from "@/libs/config";
 
 export default function Profile() {
 	const { auth, setAuth } = useApp();
@@ -14,29 +14,41 @@ export default function Profile() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
-    const login = async () => {
-        const res = await fetch(`${api}/users/login`, {
-            method: "POST",
-            body: JSON.stringify({ username, password }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+	const login = async () => {
+		const res = await fetch(`${api}/users/login`, {
+			method: "POST",
+			body: JSON.stringify({ username, password }),
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 
-        if(res.ok) {
-            const { user, token } = await res.json();
-            setAuth(user);
-            await AsyncStorage.setItem("token", token);
-            router.push("/");
-        } else {
-            alert("Unable to login");
-        }
-    }
+		if (res.ok) {
+			const { user, token } = await res.json();
+			setAuth(user);
+			await AsyncStorage.setItem("token", token);
+			router.push("/");
+		} else {
+			alert("Unable to login");
+		}
+	};
 
 	return (
 		<View
-			style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-			<Text style={{ fontWeight: "bold", fontSize: 24 }}>
+			style={{
+				flex: 1,
+				alignItems: "center",
+				justifyContent: "center",
+				backgroundColor: "#F9FAFB",
+				paddingHorizontal: 24,
+			}}>
+			<Text
+				style={{
+					fontWeight: "700",
+					fontSize: 24,
+					letterSpacing: 0.2,
+					color: "#111827",
+				}}>
 				Profile Page
 			</Text>
 
@@ -47,22 +59,29 @@ export default function Profile() {
 						alignItems: "center",
 						justifyContent: "center",
 					}}>
-					<Text style={{ fontSize: 18 }}>{auth.name}</Text>
+					<Text
+						style={{
+							fontSize: 18,
+							fontWeight: "600",
+							color: "#111827",
+						}}>
+						{auth.name}
+					</Text>
 					<TouchableOpacity
 						style={{
 							marginTop: 20,
-							paddingVertical: 10,
-							paddingHorizontal: 30,
-							backgroundColor: "red",
+							paddingVertical: 12,
+							paddingHorizontal: 32,
+							backgroundColor: "#EF4444",
 							alignItems: "center",
 							justifyContent: "center",
-							borderRadius: 10,
+							borderRadius: 12,
 						}}
 						onPress={() => setAuth(undefined)}>
 						<Text
 							style={{
-								color: "white",
-								fontWeight: "bold",
+								color: "#FFFFFF",
+								fontWeight: "700",
 								fontSize: 16,
 							}}>
 							Logout
@@ -70,21 +89,24 @@ export default function Profile() {
 					</TouchableOpacity>
 				</View>
 			) : (
-				<View style={{ marginTop: 20 }}>
+				<View style={{ marginTop: 20, width: "100%" }}>
 					<TextInput
-                        autoCapitalize="none"
+						autoCapitalize="none"
 						placeholder="username"
+						placeholderTextColor="#9CA3AF"
 						value={username}
 						onChangeText={setUsername}
 						style={{
-							padding: 10,
+							paddingVertical: 12,
+							paddingHorizontal: 14,
 							borderWidth: 1,
-							borderRadius: 5,
-							borderColor: "#66666650",
+							borderRadius: 10,
+							borderColor: "#E5E7EB",
 							fontSize: 16,
-							backgroundColor: "white",
-							marginBottom: 6,
-							width: 300,
+							backgroundColor: "#FFFFFF",
+							marginBottom: 10,
+							width: "100%",
+							color: "#111827",
 						}}
 					/>
 					<TextInput
@@ -92,31 +114,34 @@ export default function Profile() {
 						value={password}
 						onChangeText={setPassword}
 						placeholder="password"
+						placeholderTextColor="#9CA3AF"
 						style={{
-							padding: 10,
+							paddingVertical: 12,
+							paddingHorizontal: 14,
 							borderWidth: 1,
-							borderRadius: 5,
-							borderColor: "#66666650",
+							borderRadius: 10,
+							borderColor: "#E5E7EB",
 							fontSize: 16,
-							backgroundColor: "white",
-							marginBottom: 6,
-							width: 300,
+							backgroundColor: "#FFFFFF",
+							marginBottom: 12,
+							width: "100%",
+							color: "#111827",
 						}}
 					/>
 
 					<TouchableOpacity
 						style={{
-							backgroundColor: "green",
-							padding: 10,
-							borderRadius: 8,
+							backgroundColor: "#0F766E",
+							paddingVertical: 12,
+							borderRadius: 12,
 							justifyContent: "center",
 							alignItems: "center",
 						}}
-                        onPress={login}>
+						onPress={login}>
 						<Text
 							style={{
-								color: "white",
-								fontWeight: "bold",
+								color: "#FFFFFF",
+								fontWeight: "700",
 								fontSize: 16,
 							}}>
 							Login

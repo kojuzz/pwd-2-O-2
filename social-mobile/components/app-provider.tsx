@@ -1,36 +1,35 @@
 import { UserType } from "@/types/global";
 import {
-    createContext,
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useContext,
-    useEffect,
-    useState,
+	createContext,
+	Dispatch,
+	ReactNode,
+	SetStateAction,
+	useContext,
+	useEffect,
+	useState,
 } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { api } from "@/libs/config";
+
 const queryClient = new QueryClient();
 
 const AppContext = createContext<{
 	auth: UserType | undefined;
-	setAuth: Dispatch<SetStateAction<undefined>>;
-}>({ auth: undefined, setAuth: () => {} });
+	setAuth: Dispatch<SetStateAction<UserType | undefined>>;
+}>({
+	auth: undefined,
+	setAuth: () => undefined,
+});
 
 export function useApp() {
-	if (AppContext) {
-		return useContext(AppContext);
-	}
-
-	throw new Error("App Context do not exitst");
+	return useContext(AppContext);
 }
 
-const api = "http://192.168.1.4:8800";
-
 export default function AppProvider({ children }: { children: ReactNode }) {
-	const [auth, setAuth] = useState();
+	const [auth, setAuth] = useState<UserType | undefined>(undefined);
 
 	useEffect(() => {
 		const restoreLogin = async () => {

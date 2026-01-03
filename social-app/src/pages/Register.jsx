@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-const api = "http://localhost:8800";
+import { api } from "../libs/config";
 
 export default function Register() {
     const [registerError, setRegisterError] = useState(false);

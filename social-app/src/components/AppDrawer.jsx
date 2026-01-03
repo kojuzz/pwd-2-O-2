@@ -28,6 +28,12 @@ export default function AppDrawer() {
 
 	const navigate = useNavigate();
 
+	const logout = () => {
+		setAuth(undefined);
+		localStorage.removeItem("token");
+		navigate("/login");
+	};
+
 	return (
 		<Drawer
 			open={openDrawer}
@@ -57,7 +63,7 @@ export default function AppDrawer() {
 							</ListItemButton>
 						</ListItem>
 						<ListItem>
-							<ListItemButton onClick={() => setAuth(false)}>
+							<ListItemButton onClick={logout}>
 								<ListItemIcon>
 									<LogoutIcon />
 								</ListItemIcon>

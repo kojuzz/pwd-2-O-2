@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useApp } from "../AppProvider";
 
-const api = "http://localhost:8800";
+import { api } from "../libs/config";
 
 export default function Login() {
     const [loginError, setLoginError] = useState(false);
